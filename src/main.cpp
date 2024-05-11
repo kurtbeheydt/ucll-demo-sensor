@@ -1,7 +1,7 @@
 #include <Arduino.h>
 
-#define pinSensor A0
-#define pinLed 5
+#define pinSensor 5
+#define pinLedDigital 4
 
 uint32_t sensorValue;
 const uint32_t sensorThreshold = 10;
@@ -10,14 +10,13 @@ void setup() {
     Serial.begin(115200);
     Serial.println();
 
-    pinMode(pinSensor, INPUT);
-    pinMode(pinLed, OUTPUT);
+    pinMode(pinSensor, INPUT_PULLUP);
+    pinMode(pinLedDigital, OUTPUT);
 }
 
 void loop() {
-    sensorValue = analogRead(pinSensor);
+    sensorValue = digitalRead(pinSensor);
     Serial.println(sensorValue);
-    bool isThresholdReached = (sensorValue < sensorThreshold);
-    digitalWrite(pinLed, isThresholdReached);
+    digitalWrite(pinLedDigital, sensorValue);
     delay(100);
 }
