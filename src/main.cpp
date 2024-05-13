@@ -1,19 +1,29 @@
 #include <Arduino.h>
 
-#define pinButton 5
-#define pinLed 4
+#define pinSensor 13
+#define pinLed 12
+
+uint32_t sensorValue;
+
+// setting PWM properties
+const int freq = 5000;
+const int ledChannel = 0;
+const int resolution = 8;
 
 void setup() {
     Serial.begin(115200);
     Serial.println();
 
-    pinMode(pinButton, INPUT_PULLUP);
-    pinMode(pinLed, OUTPUT);
+    pinMode(pinSensor, INPUT);
+
+    ledcSetup(ledChannel, freq, resolution);
+    ledcAttachPin(pinLed, ledChannel);
 }
 
 void loop() {
-    bool buttonValue = !digitalRead(pinButton);
-    Serial.println(buttonValue);
-    digitalWrite(pinLed, buttonValue);
+    sensorValue = analogRead(pinSensor);
+    Serial.println(sensorValue);
+    sensorValue = map(sensorValue, 0, 4095, 0, 255);
+    ledcWrite(ledChannel, sensorValue);
     delay(100);
 }
